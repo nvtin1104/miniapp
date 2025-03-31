@@ -1,0 +1,7 @@
+{
+    "name": "nvtin1104/ai-cskh",
+    "description": "Chatbot cố định góc phải tích hợp AI",
+    "require": {
+        "guzzlehttp/guzzle": "^7.0"
+    }
+}
