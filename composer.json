@@ -1,5 +1,11 @@
 {
     "name": "nvtin1104/ai-cskh",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "nvtin1104"
+        }
+    ],
     "description": "Chatbot cố định góc phải tích hợp AI",
     "require": {
         "guzzlehttp/guzzle": "^7.0"
