@@ -1,36 +1,49 @@
 jQuery(document).ready(function($) {
+    // Xử lý sự kiện khi người dùng nhấn nút "Gửi"
     $('#chatbot-send').on('click', function() {
-        sendMessage();
-    });
+        var userMessage = $('#chatbot-input').val().trim();
 
-    $('#chatbot-input').on('keypress', function(e) {
-        if (e.which == 13) { // Nhấn Enter
-            sendMessage();
+        if (userMessage === '') {
+            return; // Không gửi nếu input rỗng
         }
-    });
 
-    function sendMessage() {
-        let message = $('#chatbot-input').val();
-        if (message.trim() === '') return;
+        // Hiển thị tin nhắn của người dùng
+        $('#chatbot-messages').append('<div class="user-message">' + userMessage + '</div>');
 
-        $('#chatbot-messages').append('<p class="user-message">Bạn: ' + message + '</p>');
+        // Xóa input sau khi gửi
         $('#chatbot-input').val('');
 
+        // Gửi request AJAX tới server
         $.ajax({
-            url: chatbotAjax.ajaxurl,
-            method: 'POST',
+            url: chatbotAjax.ajaxurl, // URL AJAX được localize từ PHP
+            type: 'POST',
             data: {
-                action: 'chatbot_question',
-                question: message
+                action: 'chatbot_question', // Tên action để gọi hàm chatbot_handle_question
+                question: userMessage // Câu hỏi của người dùng
             },
             success: function(response) {
-                let data = JSON.parse(response);
-                $('#chatbot-messages').append('<p class="bot-message">Bot: ' + data.response + '</p>');
+                // Parse JSON phản hồi
+                var data = JSON.parse(response);
+                var botResponse = data.response;
+
+                // Hiển thị phản hồi của chatbot
+                $('#chatbot-messages').append('<div class="bot-message">' + botResponse + '</div>');
+
+                // Cuộn xuống tin nhắn mới nhất
                 $('#chatbot-messages').scrollTop($('#chatbot-messages')[0].scrollHeight);
             },
-            error: function() {
-                $('#chatbot-messages').append('<p class="bot-message">Bot: Có lỗi xảy ra, vui lòng thử lại.</p>');
+            error: function(xhr, status, error) {
+                // Hiển thị thông báo lỗi nếu AJAX thất bại
+                $('#chatbot-messages').append('<div class="bot-message error">Có lỗi xảy ra: ' + error + '</div>');
+                $('#chatbot-messages').scrollTop($('#chatbot-messages')[0].scrollHeight);
             }
         });
-    }
+    });
+
+    // Cho phép gửi tin nhắn bằng phím Enter
+    $('#chatbot-input').on('keypress', function(e) {
+        if (e.which === 13) { // Phím Enter
+            $('#chatbot-send').click();
+        }
+    });
 });

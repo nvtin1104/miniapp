@@ -47,12 +47,10 @@ function chatbot_handle_question() {
     $session_id = uniqid();
 
     // Debug: Ghi log giá trị của $json_file_url
-    error_log('JSON File URL in chatbot_handle_question: ' . $json_file_url);
-
-    if (empty($project_id)) {
-        echo json_encode(array('response' => 'Vui lòng cấu hình Project ID và file JSON trong cài đặt plugin.'));
-        wp_die();
-    }
+    // if (empty($project_id) || empty($json_file_url)) {
+    //     echo json_encode(array('response' => 'Vui lòng cấu hình Project ID và file JSON trong cài đặt plugin.'));
+    //     wp_die();
+    // }
 
     // $upload_dir = wp_upload_dir();
     // $json_file_path = str_replace($upload_dir['baseurl'], $upload_dir['basedir'], $json_file_url);
@@ -63,10 +61,20 @@ function chatbot_handle_question() {
     //     echo json_encode(array('response' => 'File JSON không tồn tại. Vui lòng upload lại file trong cài đặt plugin.'));
     //     wp_die();
     // }
-    $base_path = 'C:\\xampp\\htdocs\\ai-plugin\\wp-content\\plugins'; // Corrected Windows path
+    if (empty($project_id)) {
+        echo json_encode(array('response' => 'Vui lòng cấu hình Project ID trong cài đặt plugin.'));
+        wp_die();
+    }
 
-    $json_file_path = $base_path . '/ai-wp-plugin/service-account.json';
+    // Hard-code đường dẫn tới file JSON
+    $json_file_path = 'C:\\xampp\\htdocs\\ai-plugin\\wp-content\\plugins\\ai-wp-plugin\\service-account.json';
 
+    // Kiểm tra xem file có tồn tại không
+    if (!file_exists($json_file_path)) {
+        error_log('JSON file does not exist at: ' . $json_file_path);
+        echo json_encode(array('response' => 'File JSON không tồn tại. Vui lòng upload lại file trong cài đặt plugin.'));
+        wp_die();
+    }
     $client = new Google_Client();
     $client->setAuthConfig($json_file_path);
     $client->addScope('https://www.googleapis.com/auth/cloud-platform');
@@ -74,10 +82,10 @@ function chatbot_handle_question() {
 
     $url = "https://dialogflow.googleapis.com/v2/projects/{$project_id}/agent/sessions/{$session_id}:detectIntent";
     $data = array(
-        'queryInput' => array(
+        'query_input' => array(
             'text' => array(
                 'text' => $question,
-                'languageCode' => 'vi'
+                'language_code' => 'vi'
             )
         )
     );
@@ -98,7 +106,7 @@ function chatbot_handle_question() {
         $response_body = array('response' => 'Có lỗi khi kết nối với AI: ' . $response->get_error_message());
     } else {
         $body = json_decode(wp_remote_retrieve_body($response), true);
-        $response_body = array('response' => $body['queryResult']['fulfillmentText']);
+        $response_body = array('response' => $body['queryResult']['fulfillmentText'] ?? 'Không có phản hồi từ AI.');
     }
 
     echo json_encode($response_body);
@@ -157,7 +165,6 @@ function chatbot_admin_menu() {
 add_action('admin_menu', 'chatbot_admin_menu');
 
 // Đăng ký các tùy chọn cài đặt
-
 function chatbot_register_settings() {
     register_setting('chatbot_settings_group', 'chatbot_dialogflow_project_id', array(
         'sanitize_callback' => 'sanitize_text_field'
@@ -213,18 +220,32 @@ function chatbot_service_account_field() {
 
 function chatbot_handle_json_upload($old_value, $new_value, $option) {
     // Debug log
-    error_log('chatbot_handle_json_upload called with: ' . print_r($new_value, true));
+    error_log('chatbot_handle_json_upload called with old_value: ' . print_r($old_value, true) . ', new_value: ' . print_r($new_value, true));
 
-    if (is_array($new_value)) {
-        $new_value = json_encode($new_value); // Chuyển mảng thành JSON
-    }
+    // Lưu thông tin $new_value để hiển thị trên giao diện
+    set_transient('chatbot_last_new_value', $new_value, 60);
 
     if (!empty($_FILES['chatbot_service_account_json']['name'])) {
         $file = $_FILES['chatbot_service_account_json'];
         error_log('Uploading file: ' . print_r($file, true));
 
+        // Lưu thông tin $_FILES để hiển thị trên giao diện
+        set_transient('chatbot_last_uploaded_file', $file, 60);
+
+        // Kiểm tra lỗi upload từ $_FILES
         if ($file['error'] !== UPLOAD_ERR_OK) {
-            error_log('Upload error: ' . $file['error']);
+            $upload_errors = array(
+                UPLOAD_ERR_INI_SIZE => 'File vượt quá giới hạn kích thước upload (upload_max_filesize).',
+                UPLOAD_ERR_FORM_SIZE => 'File vượt quá giới hạn kích thước form (MAX_FILE_SIZE).',
+                UPLOAD_ERR_PARTIAL => 'File chỉ được upload một phần.',
+                UPLOAD_ERR_NO_FILE => 'Không có file được upload.',
+                UPLOAD_ERR_NO_TMP_DIR => 'Thiếu thư mục tạm để upload.',
+                UPLOAD_ERR_CANT_WRITE => 'Không thể ghi file lên đĩa.',
+                UPLOAD_ERR_EXTENSION => 'Tiện ích PHP đã chặn upload.'
+            );
+            $error_message = $upload_errors[$file['error']] ?? 'Lỗi upload không xác định.';
+            error_log('Upload error: ' . $error_message);
+            add_settings_error('chatbot_settings_group', 'upload_error', $error_message, 'error');
             return $new_value;
         }
 
@@ -232,28 +253,39 @@ function chatbot_handle_json_upload($old_value, $new_value, $option) {
         $target_dir = $upload_dir['basedir'] . '/ai-wp-plugin/';
         $target_file = $target_dir . 'service-account.json';
 
-        if (!file_exists($target_dir) && !wp_mkdir_p($target_dir)) {
-            error_log('Failed to create directory: ' . $target_dir);
-            return $new_value;
+        // Kiểm tra và tạo thư mục
+        if (!file_exists($target_dir)) {
+            if (!wp_mkdir_p($target_dir)) {
+                error_log('Failed to create directory: ' . $target_dir);
+                add_settings_error('chatbot_settings_group', 'dir_error', 'Không thể tạo thư mục để lưu file JSON: ' . $target_dir, 'error');
+                return $new_value;
+            }
         }
 
+        // Kiểm tra quyền ghi của thư mục
         if (!is_writable($target_dir)) {
             error_log('Directory is not writable: ' . $target_dir);
+            add_settings_error('chatbot_settings_group', 'dir_permission_error', 'Thư mục ' . $target_dir . ' không có quyền ghi. Vui lòng kiểm tra quyền thư mục.', 'error');
             return $new_value;
         }
 
+        // Thử upload file
         if (move_uploaded_file($file['tmp_name'], $target_file)) {
             $new_url = $upload_dir['baseurl'] . '/ai-wp-plugin/service-account.json';
             update_option('chatbot_service_account_json', $new_url);
             error_log('File uploaded successfully. New URL: ' . $new_url);
+            add_settings_error('chatbot_settings_group', 'upload_success', 'File JSON đã được upload thành công.', 'success');
         } else {
             error_log('Failed to move uploaded file to: ' . $target_file);
+            add_settings_error('chatbot_settings_group', 'upload_error', 'Không thể upload file JSON. Kiểm tra quyền thư mục hoặc cấu hình server.', 'error');
         }
+    } else {
+        error_log('No file uploaded in $_FILES[chatbot_service_account_json]');
+        set_transient('chatbot_last_uploaded_file', 'No file selected', 60);
     }
 
     return $new_value;
 }
-
 add_action('admin_init', 'chatbot_register_settings');
 
 // Hiển thị trang cài đặt
@@ -273,7 +305,7 @@ function chatbot_settings_page() {
         <h2>Debug Information</h2>
         <pre>
             <?php
-            // echo "Last uploaded file info (from $_FILES):\n";
+            echo "Last uploaded file info (from \$_FILES):\n";
             print_r(get_transient('chatbot_last_uploaded_file'));
             echo "\nLast new_value:\n";
             print_r(get_transient('chatbot_last_new_value'));
