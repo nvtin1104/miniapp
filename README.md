@@ -1,1 +1,1 @@
-# ai-wp-plugin
+Learning miniapp
