@@ -12,7 +12,7 @@ export class UserResolver {
   constructor(private readonly userService: UserService) { }
   @Query(() => [User], { name: 'users' })
   @UseGuards(GqlAuthGuard, PermissionsGuard)
-  @Permissions('root')
+  @Permissions('root', 'read:all', 'read:user', 'admin')
   findAll() {
     return this.userService.findAll();
   }
@@ -23,11 +23,15 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
+  @UseGuards(GqlAuthGuard, PermissionsGuard)
+  @Permissions('root', 'create:all', 'create:user', 'admin')
   createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
     return this.userService.create(createUserInput);
   }
 
   @Mutation(() => User)
+  @UseGuards(GqlAuthGuard, PermissionsGuard)
+  @Permissions('root', 'update:all', 'update:user', 'admin')
   updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
     return this.userService.update(updateUserInput.id, updateUserInput);
   }

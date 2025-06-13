@@ -24,10 +24,14 @@ export enum UserType {
 }
 export enum UserPermission {
     ROOT = 'root',
-    READ = 'read',
-    WRITE = 'write',
-    DELETE = 'delete',
-    UPDATE = 'update',
+    READ = 'read:all',
+    CREATE = 'create:all',
+    UPDATE = 'update:all',
+    DELETE = 'delete:all',
+    READUSER = 'read:user',
+    CREATEUSER = 'create:user',
+    UPDATEUSER = 'update:user',
+    DELETEUSER = 'delete:user',
     ADMIN = 'admin',
     GUEST = 'guest',
 }
