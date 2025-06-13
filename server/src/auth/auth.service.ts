@@ -17,12 +17,12 @@ export class AuthService {
 
         const user = await this.userService.findByEmail(email);
         if (!user) {
-            throw new UnauthorizedException('User not found');
+            throw new UnauthorizedException('Không tìm thấy người dùng với email này');
         }
 
         const isMatch = await comparePassword(password, user.password);
         if (!isMatch) {
-            throw new UnauthorizedException('Invalid password');
+            throw new UnauthorizedException('Mật khẩu không chính xác');
         }
 
         return user;
@@ -30,7 +30,12 @@ export class AuthService {
 
     async login(email: string, password: string): Promise<{ accessToken: string }> {
         const user = await this.validateUser(email, password);
-        const payload = { username: user.username, sub: user._id };
+        const payload = {
+             username: user.username,
+              userId: user._id,
+              role: user.role, 
+              permissions: user.permissions,
+            };
         return {
             accessToken: this.jwtService.sign(payload),
         };

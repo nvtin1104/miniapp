@@ -4,6 +4,7 @@ import { AuthResolver } from './auth.resolver';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from 'src/user/user.module';
+import { createJwtConfig } from './jwt.config';
 
 @Module({
   imports: [
@@ -11,14 +12,11 @@ import { UserModule } from 'src/user/user.module';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '1d' },
-      }),
+      useFactory: createJwtConfig,
     }),
     forwardRef(() => UserModule),
   ],
   providers: [AuthService, AuthResolver],
   exports: [JwtModule],
 })
-export class AuthModule { }
+export class AuthModule {}

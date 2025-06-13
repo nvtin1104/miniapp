@@ -13,6 +13,14 @@ type User {
   createdAt: DateTime!
   updatedAt: DateTime!
   isActive: Boolean!
+  status: String
+  type: String
+  role: String
+  avatar: String
+  address: String
+  gender: String
+  lastLoginAt: DateTime!
+  permissions: [String!]
 }
 
 """
@@ -37,9 +45,17 @@ input CreateUserInput {
   name: String!
   email: String!
   username: String
-  phone: String!
-  zaloId: String!
+  phone: String
+  zaloId: String
   password: String!
+  status: String
+  type: String
+  role: String
+  avatar: String
+  address: String
+  gender: String
+  lastLoginAt: DateTime
+  permissions: [String!]
 }
 
 input UpdateUserInput {
@@ -49,5 +65,13 @@ input UpdateUserInput {
   phone: String
   zaloId: String
   password: String
+  status: String
+  type: String
+  role: String
+  avatar: String
+  address: String
+  gender: String
+  lastLoginAt: DateTime
+  permissions: [String!]
   id: ID!
 }

@@ -19,10 +19,11 @@ export class UserService {
       const { password, ...rest } = createUserDto;
       const hashedPassword = await hashPassword(password);
 
-      await this.userModel.create({
+      const user = await this.userModel.create({
         ...rest,
         password: hashedPassword,
       });
+      return user;
     } catch (error) {
       throw error;
     }
@@ -41,8 +42,19 @@ export class UserService {
     }).exec();
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  update(id: string, updateUserInput: UpdateUserInput) {
+    const { password, ...rest } = updateUserInput;
+    const updateData: any = { ...rest };
+
+    if (password) {
+      const { hashPassword } = createBcryptHook(this.configService);
+      return hashPassword(password).then((hashedPassword) => {
+        updateData.password = hashedPassword;
+        return this.userModel.findByIdAndUpdate(id, updateData, { new: true }).exec();
+      });
+    }
+
+    return this.userModel.findByIdAndUpdate(id, updateData, { new: true }).exec();
   }
 
   async remove(id: string): Promise<User | null> {

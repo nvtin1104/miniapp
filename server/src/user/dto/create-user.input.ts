@@ -1,11 +1,15 @@
+// create-user.input.ts
 import { InputType, Field } from '@nestjs/graphql';
-import { IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
+
 @InputType()
 export class CreateUserInput {
   @Field()
+  @IsString()
   name: string;
 
   @Field()
+  @IsEmail()
   email: string;
 
   @Field({ nullable: true })
@@ -13,12 +17,53 @@ export class CreateUserInput {
   @IsString()
   username?: string;
 
-  @Field()
-  phone: string;
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  phone?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  zaloId?: string;
 
   @Field()
-  zaloId: string;
-
-  @Field()
+  @MinLength(6)
   password: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  status?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  type?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  role?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  avatar?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  address?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsString()
+  gender?: string;
+  @Field({ nullable: true })
+  @IsOptional()
+  lastLoginAt?: Date;
+  @Field(() => [String], { nullable: true })
+  @IsOptional()
+  permissions?: string[];
 }

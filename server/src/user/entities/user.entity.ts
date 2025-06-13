@@ -23,13 +23,26 @@ export class User {
 
   @Field({ nullable: true })
   password: string;
-
   @Field()
   createdAt: Date;
-
   @Field()
   updatedAt: Date;
-
   @Field()
   isActive: boolean;
+  @Field({ nullable: true })
+  status?: string;
+  @Field({ nullable: true })
+  type?: string;
+  @Field({ nullable: true })
+  role?: string;
+  @Field({ nullable: true })
+  avatar?: string;
+  @Field({ nullable: true })
+  address?: string;
+  @Field({ nullable: true })
+  gender?: string;
+  @Field()
+  lastLoginAt: Date;
+  @Field(() => [String], { nullable: true })
+  permissions?: string[];
 }
