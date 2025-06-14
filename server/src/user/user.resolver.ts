@@ -7,14 +7,20 @@ import { GqlAuthGuard } from 'src/common/guards/gql-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { PermissionsGuard } from 'src/common/guards/permission.guard';
 import { Permissions } from 'src/common/guards/permission.decorator';
+import { FilterInput, PaginationInput, SortInput } from './dto/user-list-response.dto';
+import { UserListResponse } from './entities/reponsive.entity';
 @Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) { }
-  @Query(() => [User], { name: 'users' })
+  @Query(() => UserListResponse, { name: 'users' })
   @UseGuards(GqlAuthGuard, PermissionsGuard)
   @Permissions('root', 'read:all', 'read:user', 'admin')
-  findAll() {
-    return this.userService.findAll();
+  findAll(
+    @Args('filter', { nullable: true }) filter?: FilterInput,
+    @Args('sort', { type: () => [SortInput], nullable: true }) sort?: SortInput[],
+    @Args('pagination', { nullable: true }) pagination?: PaginationInput,
+  ) {
+    return this.userService.findAll(filter, sort, pagination);
   }
 
   @Query(() => User, { name: 'user' })

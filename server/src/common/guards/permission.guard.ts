@@ -6,7 +6,7 @@ import { PERMISSIONS_KEY } from './permission.decorator';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private reflector: Reflector) { }
 
   canActivate(context: ExecutionContext): boolean {
     const requiredPermissions = this.reflector.getAllAndOverride<string[]>(PERMISSIONS_KEY, [
@@ -24,10 +24,10 @@ export class PermissionsGuard implements CanActivate {
     if (!user || !user.permissions) {
       throw new ForbiddenException('User does not have permissions');
     }
-
-    const hasPermission = requiredPermissions.every(permission =>
+    const hasPermission = requiredPermissions.some(permission =>
       user.permissions.includes(permission),
     );
+
 
     if (!hasPermission) {
       throw new ForbiddenException('You do not have required permissions');
