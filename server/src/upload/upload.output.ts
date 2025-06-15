@@ -1,7 +1,10 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class UploadFileInfo {
+  @Field(() => ID)
+  _id: string;
+
   @Field(() => String, { nullable: true })
   alt?: string;
 

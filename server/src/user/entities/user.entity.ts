@@ -1,6 +1,9 @@
 // user.entity.ts
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { ObjectPermission } from './custom.entity';
+import { Types } from 'mongoose';
+import { Prop } from '@nestjs/mongoose';
+import { UploadFileInfo } from 'src/upload/upload.output';
 
 @ObjectType()
 export class User {
@@ -36,8 +39,9 @@ export class User {
   type?: string;
   @Field({ nullable: true })
   role?: string;
-  @Field({ nullable: true })
-  avatar?: string;
+  @Field(() => UploadFileInfo, { nullable: true })
+  @Prop({ type: Types.ObjectId, ref: 'Upload', required: false })
+  avatar?: Types.ObjectId | UploadFileInfo;
   @Field({ nullable: true })
   address?: string;
   @Field({ nullable: true })

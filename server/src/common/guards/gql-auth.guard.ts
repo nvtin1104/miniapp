@@ -16,9 +16,7 @@ export class GqlAuthGuard {
 
     const authHeader = req.headers.authorization;
     if (!authHeader) throw new UnauthorizedException('Token không được cung cấp');
-    console.log('Authorization Header:', authHeader);
     const parts = authHeader.split(' ');
-    console.log('Parts:', parts);
 
     let token;
     if (parts.length === 2 && parts[0].toLowerCase() === 'bearer' && parts[1]) {

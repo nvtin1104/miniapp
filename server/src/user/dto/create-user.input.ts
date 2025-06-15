@@ -2,6 +2,10 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
 import { ObjectPermissionInput } from './custom.input';
+import { Prop } from '@nestjs/mongoose';
+import { UploadFileInfo } from 'src/upload/upload.output';
+import { Types } from 'mongoose';
+import { UploadFileInput } from 'src/upload/upload.input';
 
 @InputType()
 export class CreateUserInput {
@@ -47,10 +51,11 @@ export class CreateUserInput {
   @IsString()
   role?: string;
 
-  @Field({ nullable: true })
+  @Field(() => UploadFileInput, { nullable: true })
+  @Prop({ type: Types.ObjectId, ref: 'Upload', required: false })
   @IsOptional()
   @IsString()
-  avatar?: string;
+  avatar?: Types.ObjectId | UploadFileInfo;
 
   @Field({ nullable: true })
   @IsOptional()
@@ -61,9 +66,11 @@ export class CreateUserInput {
   @IsOptional()
   @IsString()
   gender?: string;
+
   @Field({ nullable: true })
   @IsOptional()
   lastLoginAt?: Date;
+
   @Field(() => ObjectPermissionInput, { nullable: true })
   @IsOptional()
   permissions?: ObjectPermissionInput;

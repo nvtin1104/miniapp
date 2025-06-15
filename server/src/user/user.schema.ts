@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { UserGender, UserPermission, UserRole, UserStatus, UserType } from './user.enum';
 import { ObjectPermission } from './entities/custom.entity';
+import { Upload } from 'graphql-upload-ts';
 
 export type UserDocument = User & Document;
 
@@ -40,8 +41,8 @@ export class User {
         default: UserRole.USER
     })
     role: string;
-    @Prop({ required: false })
-    avatar?: string;
+    @Prop({ type: Types.ObjectId, ref: 'Upload', required: false })
+    avatar?: Types.ObjectId | Upload;
     @Prop({ required: false })
     address?: string;
     @Prop({
