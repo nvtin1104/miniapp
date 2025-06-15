@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { UserGender, UserPermission, UserRole, UserStatus, UserType } from './user.enum';
+import { ObjectPermission } from './entities/custom.entity';
 
 export type UserDocument = User & Document;
 
@@ -52,9 +53,11 @@ export class User {
     @Prop({ default: Date.now })
     lastLoginAt: Date;
     @Prop({
-        type: [String],
-        enum: UserPermission,
-        default: [UserPermission.GUEST]
+        type: ObjectPermission,
+        default: {
+            name: 'guest',
+            value: [UserPermission.GUEST]
+        }
     })
     permissions: UserPermission[];
 }

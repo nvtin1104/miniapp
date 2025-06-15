@@ -6,7 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './user.schema';
 import { Model } from 'mongoose';
 import { createBcryptHook } from 'src/common/hook/hash-password.hook';
-import { FilterInput, PaginationInput, SortInput } from './dto/user-list-response.dto';
+import { FilterInput, PaginationInput, SortInput } from './dto/custom.input';
 
 @Injectable()
 export class UserService {

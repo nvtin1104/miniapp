@@ -10,12 +10,12 @@ export class AuthResolver {
   @UseGuards(GqlAuthGuard)
   getProfile(@Context() context) {
     const {
-      sub
+      username,
     } = context.req.user;
-    if (!sub) {
+    if (!username) {
       throw new Error('Unauthorized');
     }
-    return sub;
+    return username;
   }
   @Mutation(() => String)
   async login(

@@ -1,6 +1,7 @@
 // create-user.input.ts
 import { InputType, Field } from '@nestjs/graphql';
 import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
+import { ObjectPermissionInput } from './custom.input';
 
 @InputType()
 export class CreateUserInput {
@@ -63,7 +64,7 @@ export class CreateUserInput {
   @Field({ nullable: true })
   @IsOptional()
   lastLoginAt?: Date;
-  @Field(() => [String], { nullable: true })
+  @Field(() => ObjectPermissionInput, { nullable: true })
   @IsOptional()
-  permissions?: string[];
+  permissions?: ObjectPermissionInput;
 }

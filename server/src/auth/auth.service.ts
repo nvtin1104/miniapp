@@ -31,11 +31,11 @@ export class AuthService {
     async login(email: string, password: string): Promise<{ accessToken: string }> {
         const user = await this.validateUser(email, password);
         const payload = {
-             username: user.username,
-              userId: user._id,
-              role: user.role, 
-              permissions: user.permissions,
-            };
+            username: user.username,
+            userId: user._id,
+            role: user.role,
+            permissions: user.permissions.value,
+        };
         return {
             accessToken: this.jwtService.sign(payload),
         };

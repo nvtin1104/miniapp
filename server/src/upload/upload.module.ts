@@ -1,9 +1,17 @@
 import { Module } from '@nestjs/common';
 import { UploadResolver } from './upload.resolver';
 import { UploadService } from './upload.service';
+import { Upload } from 'graphql-upload-ts';
+import { UploadSchema } from './upload.schema';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
-  providers: [UploadResolver, UploadService],
-  exports: [UploadService], // Export để module khác dùng
+  imports: [
+    MongooseModule.forFeature([{ name: Upload.name, schema: UploadSchema }]),
+  ],
+  providers: [
+    UploadResolver,
+    UploadService],
+  exports: [UploadService],
 })
-export class UploadModule {}
+export class UploadModule { }

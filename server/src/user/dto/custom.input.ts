@@ -59,3 +59,10 @@ export class PaginationInput {
   @Field(() => Int, { defaultValue: 10 })
   limit: number = 10;
 }
+@InputType()
+export class ObjectPermissionInput {
+  @Field(() => String)
+  name: string;
+  @Field(() => [String])
+  value: Array<string>;
+}

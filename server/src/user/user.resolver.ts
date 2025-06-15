@@ -7,9 +7,9 @@ import { GqlAuthGuard } from 'src/common/guards/gql-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { PermissionsGuard } from 'src/common/guards/permission.guard';
 import { Permissions } from 'src/common/guards/permission.decorator';
-import { FilterInput, PaginationInput, SortInput } from './dto/user-list-response.dto';
-import { UserListResponse } from './entities/reponsive.entity';
+import { FilterInput, PaginationInput, SortInput } from './dto/custom.input';
 import { FileUpload, GraphQLUpload } from 'graphql-upload-ts';
+import { UserListResponse } from './entities/custom.entity';
 @Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) { }
@@ -57,7 +57,7 @@ export class UserResolver {
   @UseGuards(GqlAuthGuard, PermissionsGuard)
   @Permissions('root', 'update:all', 'update:user', 'admin')
   updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
-    return this.userService.update(updateUserInput.id, updateUserInput);
+    return this.userService.update(updateUserInput._id, updateUserInput);
   }
 
   @Mutation(() => User)

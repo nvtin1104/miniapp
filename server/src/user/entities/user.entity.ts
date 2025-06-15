@@ -1,5 +1,6 @@
 // user.entity.ts
 import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ObjectPermission } from './custom.entity';
 
 @ObjectType()
 export class User {
@@ -43,6 +44,6 @@ export class User {
   gender?: string;
   @Field()
   lastLoginAt: Date;
-  @Field(() => [String], { nullable: true })
-  permissions?: string[];
+  @Field(() => ObjectPermission, { nullable: true })
+  permissions?: ObjectPermission;
 }

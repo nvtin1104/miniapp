@@ -15,3 +15,10 @@ export class UserListResponse {
   @Field(() => Int)
   limit: number;
 }
+@ObjectType()
+export class ObjectPermission {
+    @Field(() => String)
+    name: string;
+    @Field(() => [String])
+    value: Array<string>;
+}
