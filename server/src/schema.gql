@@ -80,9 +80,10 @@ input PaginationInput {
 }
 
 type Mutation {
-  createUser(createUserInput: CreateUserInput!): User!
+  createUser(createUserInput: CreateUserInput!, file: Upload): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: String!): User!
+  uploadFile(file: Upload!): String!
   login(email: String!, password: String!): String!
 }
 
@@ -102,6 +103,9 @@ input CreateUserInput {
   lastLoginAt: DateTime
   permissions: [String!]
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 input UpdateUserInput {
   name: String

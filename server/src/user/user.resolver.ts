@@ -9,6 +9,7 @@ import { PermissionsGuard } from 'src/common/guards/permission.guard';
 import { Permissions } from 'src/common/guards/permission.decorator';
 import { FilterInput, PaginationInput, SortInput } from './dto/user-list-response.dto';
 import { UserListResponse } from './entities/reponsive.entity';
+import { FileUpload, GraphQLUpload } from 'graphql-upload-ts';
 @Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) { }
@@ -31,10 +32,27 @@ export class UserResolver {
   @Mutation(() => User)
   @UseGuards(GqlAuthGuard, PermissionsGuard)
   @Permissions('root', 'create:all', 'create:user', 'admin')
-  createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
+  async createUser(
+    @Args('createUserInput') createUserInput: CreateUserInput,
+    @Args({ name: 'file', type: () => GraphQLUpload, nullable: true }) file?: FileUpload,
+  ) {
+    let fileUrl: string | undefined;
+
+    if (file) {
+      const { createReadStream, filename } = await file;
+      const path = `uploads/${Date.now()}-${filename}`;
+      await new Promise((resolve, reject) => {
+        createReadStream()
+          .pipe(require('fs').createWriteStream(path))
+          .on('finish', resolve)
+          .on('error', reject);
+      });
+      fileUrl = path; // Lưu đường dẫn để gắn vào user
+    }
+    console.log(fileUrl)
+
     return this.userService.create(createUserInput);
   }
-
   @Mutation(() => User)
   @UseGuards(GqlAuthGuard, PermissionsGuard)
   @Permissions('root', 'update:all', 'update:user', 'admin')
