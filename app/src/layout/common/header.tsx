@@ -9,10 +9,10 @@ import { useMemo } from "react";
 import { useRouteHandle } from "@/hooks";
 import { getConfig } from "@/utils/template";
 import headerIllus from "@/static/header-illus.svg";
-import SearchBar from "./search-bar";
-import TransitionLink from "./transition-link";
+import SearchBar from "@/components/search-bar";
+import TransitionLink from "@/components/transition-link";
 import { Icon } from "zmp-ui";
-import { DefaultUserAvatar } from "./vectors";
+import { DefaultUserAvatar } from "@/components/vectors";
 
 export default function Header() {
   const categories = useAtomValue(categoriesStateUpwrapped);

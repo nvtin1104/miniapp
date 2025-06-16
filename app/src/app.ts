@@ -6,6 +6,10 @@ import { RouterProvider } from "react-router-dom";
 // Router
 import router from "@/router";
 
+// Apollo Client
+import { ApolloProvider } from "@apollo/client";
+import client from "@/graphql/apolloClient"; 
+
 // ZaUI stylesheet
 import "zmp-ui/zaui.css";
 // Tailwind stylesheet
@@ -22,4 +26,9 @@ if (!window.APP_CONFIG) {
 
 // Mount the app
 const root = createRoot(document.getElementById("app")!);
-root.render(createElement(RouterProvider, { router }));
+root.render(
+  createElement(ApolloProvider, { 
+    client,
+    children: createElement(RouterProvider, { router })
+  })
+);

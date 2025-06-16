@@ -1,4 +1,4 @@
-import Layout from "@/components/layout";
+import Layout from "@/layout";
 import CartPage from "@/pages/cart";
 import CategoryDetailPage from "@/pages/catalog/category-detail";
 import CategoryListPage from "@/pages/catalog/category-list";
@@ -121,7 +121,12 @@ const router = createBrowserRouter(
       ],
     },
   ],
-  { basename: getBasePath() }
+  {
+    basename: getBasePath(),
+    future: {
+      v7_relativeSplatPath: true,
+    },
+  }
 );
 
 export default router;

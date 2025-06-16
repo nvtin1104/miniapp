@@ -1,8 +1,12 @@
+import { GET_PROFILE } from "@/graphql/queries/user.query";
 import Banners from "./banners";
 import Category from "./category";
 import FlashSales from "./flash-sales";
+import { useQuery } from "@apollo/client";
 
 const HomePage: React.FunctionComponent = () => {
+  const { data, loading, error } = useQuery(GET_PROFILE);
+  console.log(data);
   return (
     <div className="min-h-full space-y-2 py-2">
       <Category />

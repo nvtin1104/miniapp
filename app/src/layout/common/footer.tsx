@@ -1,10 +1,10 @@
-import { CartIcon, CategoryIcon, HomeIcon, PackageIcon } from "./vectors";
-import HorizontalDivider from "./horizontal-divider";
+import { CartIcon, CategoryIcon, HomeIcon, PackageIcon } from "@/components/vectors";
+import HorizontalDivider from "@/components/horizontal-divider";
 import { useAtomValue } from "jotai";
 import { cartState } from "@/state";
-import TransitionLink from "./transition-link";
+import TransitionLink from "@/components/transition-link";
 import { useRouteHandle } from "@/hooks";
-import Badge from "./badge";
+import Badge from "@/components/badge";
 
 const NAV_ITEMS = [
   {
@@ -76,4 +76,5 @@ export default function Footer() {
       </>
     );
   }
+  return null;
 }
