@@ -15,7 +15,10 @@ export class AuthService {
     async validateUser(email: string, password: string): Promise<any> {
         const { comparePassword } = createBcryptHook(this.configService);
 
-        const user = await this.userService.findByEmail(email);
+        const user = await this.userService.findBy({
+            key: 'email',
+            value: email
+        });
         if (!user) {
             throw new UnauthorizedException('Không tìm thấy người dùng với email này');
         }

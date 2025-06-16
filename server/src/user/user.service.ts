@@ -33,7 +33,7 @@ export class UserService {
   }
 
   async findAll(
-    filter?: UserFilterInput,
+    query?: UserFilterInput,
     sort?: SortInput[],
     pagination?: PaginationInput,
   ) {
@@ -44,15 +44,15 @@ export class UserService {
         sortQuery[field] = order === 'ASC' ? 1 : -1;
       });
     }
-    const query = buildMongoQuery<UserFilterInput>(filter || {});
+    const q = buildMongoQuery<UserFilterInput>(query || {});
     // Pagination
     const page = pagination?.page || 1;
     const limit = pagination?.limit || 10;
     const skip = (page - 1) * limit;
 
     const [data, total] = await Promise.all([
-      this.userModel.find(query).populate('avatar').sort(sortQuery).skip(skip).limit(limit).exec(),
-      this.userModel.countDocuments(query),
+      this.userModel.find(q).populate('avatar').sort(sortQuery).skip(skip).limit(limit).exec(),
+      this.userModel.countDocuments(q),
     ]);
 
     return {
@@ -62,20 +62,23 @@ export class UserService {
       limit,
     };
   }
-  findOne(filter?: UserFilterInput) {
-    let query: any = {};
-    if (filter) {
-      query = buildMongoQuery<UserFilterInput>(filter || {});
+  findOne(query?: UserFilterInput) {
+    let q: any = {};
+    if (query) {
+      q = buildMongoQuery<UserFilterInput>(query || {});
     }
 
-    return this.userModel.findOne(query).populate('avatar').exec();
+    return this.userModel.findOne(q).populate('avatar').exec();
   }
   findById(id: string) {
     return this.userModel.findById(id).populate('avatar').exec();
   }
-  findByEmail(email: string): Promise<User | null> {
+  findBy({
+    key,
+    value
+  }): Promise<User | null> {
     return this.userModel.findOne({
-      email: email,
+      [key]: value
     }).exec();
   }
 

@@ -14,7 +14,7 @@ export class User {
     email: string;
     @Prop({ required: false })
     username?: string;
-    @Prop({ required: true, minlength: 6, maxlength: 20 })
+    @Prop({ required: false, minlength: 6, maxlength: 20 })
     phone: string;
     @Prop({ required: true, minlength: 6, maxlength: 20 })
     zaloId: string;

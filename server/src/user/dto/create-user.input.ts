@@ -67,11 +67,4 @@ export class CreateUserInput {
   @IsString()
   gender?: string;
 
-  @Field({ nullable: true })
-  @IsOptional()
-  lastLoginAt?: Date;
-
-  @Field(() => ObjectPermissionInput, { nullable: true })
-  @IsOptional()
-  permissions?: ObjectPermissionInput;
 }
