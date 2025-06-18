@@ -63,6 +63,8 @@ export const userInfoState = atom<Promise<UserInfo>>(async (get) => {
       address: "",
     };
   }
+
+
 });
 
 export const loadableUserInfoState = loadable(userInfoState);

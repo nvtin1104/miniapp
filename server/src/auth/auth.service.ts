@@ -31,7 +31,7 @@ export class AuthService {
         return user;
     }
 
-    async login(email: string, password: string): Promise<{ accessToken: string }> {
+    async login(email: string, password: string): Promise<{ accessToken: string, refreshToken: string }> {
         const user = await this.validateUser(email, password);
         const payload = {
             username: user.username,
@@ -39,8 +39,12 @@ export class AuthService {
             role: user.role,
             permissions: user.permissions.value,
         };
+        const refreshToken = this.jwtService.sign(payload, {
+            expiresIn: '7d',
+        });
         return {
             accessToken: this.jwtService.sign(payload),
+            refreshToken,
         };
     }
 }

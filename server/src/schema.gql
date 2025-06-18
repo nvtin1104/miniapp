@@ -14,6 +14,11 @@ type ObjectPermission {
   value: [String!]!
 }
 
+type ZaloMeResponse {
+  user: User!
+  accessToken: String!
+}
+
 type UploadFileInfo {
   _id: ID!
   alt: String
@@ -42,6 +47,7 @@ type User {
   createdAt: DateTime!
   updatedAt: DateTime!
   isActive: Boolean!
+  isZaloActive: Boolean!
   status: String
   type: String
   role: String
@@ -62,7 +68,8 @@ type Query {
   user(id: String!): User!
   userBy(query: UserFilterInput): User!
   getProfile: String!
-  zaloMe(code: String!): User!
+  miniAppLogin(code: String!): ZaloMeResponse!
+  miniAppMe: User!
 }
 
 input UserFilterInput {
@@ -117,6 +124,7 @@ type Mutation {
   deleteUser(id: ID!): User!
   uploadFile(file: Upload!, uploadFileInput: UploadFileInput!): UploadFileInfo!
   login(email: String!, password: String!): String!
+  miniAppActiveZalo(data: ZaloActiveInput!): User!
 }
 
 input CreateUserInput {
@@ -167,4 +175,11 @@ input UpdateUserInput {
   address: String
   gender: String
   _id: ID!
+}
+
+input ZaloActiveInput {
+  avatar: String!
+  id: String!
+  name: String!
+  token: String!
 }

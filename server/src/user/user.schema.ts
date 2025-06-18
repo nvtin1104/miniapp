@@ -24,8 +24,10 @@ export class User {
     createdAt: Date;
     @Prop({ default: Date.now })
     updatedAt: Date;
-    @Prop({ default: true })
+    @Prop({ default: false })
     isActive: boolean;
+    @Prop({ default: false })
+    isZaloActive: boolean;
     @Prop({
         enum: UserStatus,
         default: UserStatus.ACTIVE

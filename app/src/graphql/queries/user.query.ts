@@ -10,11 +10,14 @@ export const GET_USER = gql`
   }
 `;
 export const GET_USER_INFO = gql`
-  query ZaloMe($code: String!) {
-    zaloMe(code: $code) {
+  query MiniAppLogin($code: String!) {
+    miniAppLogin(code: $code) {
+      user {
       _id
       name
-      isActive
+      avatar {
+      path
+      }
       status
       type
       role
@@ -25,14 +28,37 @@ export const GET_USER_INFO = gql`
       username
       phone
       zaloId
-      password
-      createdAt
-      updatedAt
+      isZaloActive
+      isActive
+      }
+      accessToken
     }
   }
 `;
 export const GET_PROFILE = gql`
- query Query {
-  getProfile
+query MiniAppMe {
+  miniAppMe {
+    _id
+    name
+    email
+    username
+    phone
+    zaloId
+    password
+    createdAt
+    updatedAt
+    isActive
+    isZaloActive
+    status
+    type
+    role
+    avatar {
+      path
+    }
+    address
+    gender
+    lastLoginAt
+  }
 }
+
 `;

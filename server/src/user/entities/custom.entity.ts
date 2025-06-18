@@ -17,8 +17,16 @@ export class UserListResponse {
 }
 @ObjectType()
 export class ObjectPermission {
-    @Field(() => String)
-    name: string;
-    @Field(() => [String])
-    value: Array<string>;
+  @Field(() => String)
+  name: string;
+  @Field(() => [String])
+  value: Array<string>;
+}
+@ObjectType()
+export class ZaloMeResponse {
+  @Field(() => User)
+  user: User;
+
+  @Field()
+  accessToken: string;
 }

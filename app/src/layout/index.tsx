@@ -9,27 +9,31 @@ import FloatingCartPreview from "@/components/floating-cart-preview";
 import { useQuery } from "@apollo/client";
 import { GET_USER_INFO } from "@/graphql/queries/user.query";
 import { getUserID } from "zmp-sdk/apis";
-
+import { useAtom } from "jotai";
+import { userZalo } from "@/store/userAtom";
+import { nativeStorage } from "zmp-sdk/apis";
 export default function Layout() {
   const [userID, setUserID] = useState<string | null>(null);
-
+  const [userInfo, setUserInfo] = useAtom(userZalo);
   useEffect(() => {
     const fetchUserID = async () => {
       const userId = await getUserID({});
-      console.log(userId);
-      setUserID(userId); 
+      setUserID(userId);
     };
     fetchUserID();
   }, []);
 
-const { data, loading, error } = useQuery(GET_USER_INFO, {
-  variables: { code: userID },
-  skip: !userID,                    // ← đẩy skip ra ngoài variables
-  fetchPolicy: 'network-only',      // ← cũng phải là option chứ không phải biến
-});
+  const { data, loading, error } = useQuery(GET_USER_INFO, {
+    variables: { code: userID },
+    skip: !userID,
+    fetchPolicy: 'network-only',
+  });
 
   useEffect(() => {
-    if (data) console.log(data);
+    if (data) {
+      nativeStorage.setItem("accessToken", data.miniAppLogin.accessToken);
+      setUserInfo(data.miniAppLogin.user);
+    }
     if (error) console.log(error);
   }, [data, error]);
 

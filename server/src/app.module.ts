@@ -21,7 +21,7 @@ import { ZaloModule } from './zalo/zalo.module';
       playground: false,
       csrfPrevention: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
-      context: ({ req }) => ({ req }),
+      context: ({ req, res }) => ({ req, res }),
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

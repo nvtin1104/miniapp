@@ -33,6 +33,8 @@ export class User {
   updatedAt: Date;
   @Field()
   isActive: boolean;
+  @Field()
+  isZaloActive: boolean;
   @Field({ nullable: true })
   status?: string;
   @Field({ nullable: true })

@@ -1,13 +1,14 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { UserRole, UserStatus, UserType } from 'src/user/user.enum';
 import { UserService } from 'src/user/user.service';
+import { ZaloActiveInput } from './zalo.entity';
 
 @Injectable()
 export class ZaloService {
-    constructor(private readonly userService: UserService) {
-
+    constructor(private readonly userService: UserService, private readonly jwtService: JwtService) {
     }
-    async me(code: string) {
+    async login(code: string) {
         const user = await this.userService.findBy({
             key: 'zaloId',
             value: code
@@ -24,8 +25,34 @@ export class ZaloService {
                 username: code,
                 phone: code,
             });
-            return user;
+            const accessToken = this.jwtService.sign({
+                userId: (user as any)._id,
+            });
+            return {
+                user,
+                accessToken,
+            };
         }
+        return {
+            user,
+            accessToken: this.jwtService.sign({
+                userId: (user as any)._id,
+            }),
+        };
+    }
+    async me(userId: string) {
+        const user = await this.userService.findById(userId);
         return user;
+    }
+    async activeZalo(data: ZaloActiveInput) {
+        const user = await this.userService.findBy({
+            key: 'zaloId',
+            value: data.id
+        });
+        console.log(user);
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return []
     }
 }

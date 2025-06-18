@@ -5,7 +5,9 @@ import { UseGuards } from '@nestjs/common';
 
 @Resolver()
 export class AuthResolver {
-  constructor(private readonly authService: AuthService) { }
+  constructor(
+    private readonly authService: AuthService,
+  ) { }
   @Query(() => String)
   @UseGuards(GqlAuthGuard)
   getProfile(@Context() context) {
@@ -21,8 +23,20 @@ export class AuthResolver {
   async login(
     @Args('email') email: string,
     @Args('password') password: string,
+    @Context() context: { res: Response & { cookie: Function } },
   ): Promise<string> {
-    const token = await this.authService.login(email, password);
-    return token.accessToken;
+    const { accessToken, refreshToken } = await this.authService.login(email, password);
+  
+    context.res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      maxAge: 15 * 60 * 1000,
+    });
+  
+    context.res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+  
+    return accessToken;
   }
 }
