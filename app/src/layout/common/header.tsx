@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import {
   categoriesStateUpwrapped,
   loadableUserInfoState,
-  userInfoState,
 } from "@/state";
 import { useMemo } from "react";
 import { useRouteHandle } from "@/hooks";
@@ -12,14 +11,15 @@ import headerIllus from "@/static/header-illus.svg";
 import SearchBar from "@/components/search-bar";
 import TransitionLink from "@/components/transition-link";
 import { Icon } from "zmp-ui";
-import { DefaultUserAvatar } from "@/components/vectors";
+import { DefaultUserAvatar } from "@/components/icons";
+import { userZalo } from "@/store/userAtom";
 
 export default function Header() {
   const categories = useAtomValue(categoriesStateUpwrapped);
   const navigate = useNavigate();
   const location = useLocation();
   const [handle, match] = useRouteHandle();
-  const userInfo = useAtomValue(loadableUserInfoState);
+  const userInfo = useAtomValue(userZalo);
 
   const title = useMemo(() => {
     if (handle) {
@@ -83,16 +83,16 @@ export default function Header() {
             }}
           />
           <TransitionLink to="/profile">
-            {userInfo.state === "hasData" && userInfo.data ? (
+            {userInfo?.isZaloActive ? (
               <img
-                className="w-8 h-8 rounded-full"
-                src={userInfo.data.avatar}
+                className="w-8 h-8 rounded-full object-cover"
+                src={userInfo.avatar?.path}
               />
             ) : (
               <DefaultUserAvatar
                 width={32}
                 height={32}
-                className={userInfo.state === "loading" ? "animate-pulse" : ""}
+                className={!userInfo?.isZaloActive ? "animate-pulse" : ""}
               />
             )}
           </TransitionLink>

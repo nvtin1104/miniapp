@@ -182,4 +182,5 @@ input ZaloActiveInput {
   id: String!
   name: String!
   token: String!
+  userAccessToken: String!
 }

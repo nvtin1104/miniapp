@@ -1,11 +1,11 @@
 import { UserInfo } from '@/types/user.types';
 import { atom } from 'jotai';
 import { loadable } from 'jotai/utils';
-import { getPhoneNumber, getSetting, getUserInfo } from 'zmp-sdk';
+import { getAccessToken, getPhoneNumber, getSetting, getUserInfo } from 'zmp-sdk';
 
 export const userZalo = atom<UserInfo | null>(null);
 export const userInfoKeyState = atom(0);
-export const userInfoState = atom<Promise<{ id: string; name: string; avatar: string; token: string } | null>>(async (get) => {
+export const userInfoState = atom<Promise<{ id: string; name: string; avatar: string; token: string, userAccessToken: string } | null>>(async (get) => {
     get(userInfoKeyState);
     const user = get(userZalo);
     const {
@@ -14,14 +14,19 @@ export const userInfoState = atom<Promise<{ id: string; name: string; avatar: st
             "scope.userPhonenumber": grantedPhoneNumber,
         },
     } = await getSetting({});
-    const dataResult: { id: string; name: string; avatar: string; token: string } = {
+    const dataResult: { id: string; name: string; avatar: string; token: string, userAccessToken: string } = {
         id: "",
         name: "",
         avatar: "",
         token: "",
+        userAccessToken: "",
     };
 
-    if (grantedUserInfo && grantedPhoneNumber && !user?.isZaloActive) {
+    if (
+        grantedUserInfo
+        && grantedPhoneNumber
+        // && !user?.isZaloActive
+    ) {
         const { userInfo } = await getUserInfo({});
         dataResult.id = userInfo.id;
         dataResult.name = userInfo.name;
@@ -30,8 +35,11 @@ export const userInfoState = atom<Promise<{ id: string; name: string; avatar: st
         if (token) {
             dataResult.token = token;
         }
+        const accessToken = await getAccessToken();
+        if (accessToken) {
+            dataResult.userAccessToken = accessToken;
+        }
         return dataResult;
-
     }
     return null;
 

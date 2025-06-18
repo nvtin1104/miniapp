@@ -1,6 +1,6 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, InputType } from "@nestjs/graphql";
 
-@ObjectType()
+@InputType()
 export class ZaloActiveInput {
     @Field()
     avatar: string;
@@ -10,4 +10,6 @@ export class ZaloActiveInput {
     name: string;
     @Field()
     token: string;
+    @Field()
+    userAccessToken: string;
 }

@@ -1,5 +1,5 @@
 import Section from "@/components/section";
-import { VoucherIcon } from "@/components/vectors";
+import { VoucherIcon } from "@/components/icons";
 import { useToBeImplemented } from "@/hooks";
 import { Icon } from "zmp-ui";
 

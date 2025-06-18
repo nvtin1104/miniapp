@@ -267,6 +267,48 @@ export function PlusIcon(props: HTMLProps<SVGSVGElement>) {
     </svg>
   );
 }
+export function ProfileIcon(props: { active?: boolean }) {
+  if (props.active) {
+    return (
+      <svg
+        width="25"
+        height="25"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          opacity="0.3"
+          d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z"
+          fill="var(--primary)"
+        />
+        <path
+          d="M4 20C4 16.6863 7.13401 14 11 14H13C16.866 14 20 16.6863 20 20V21H4V20Z"
+          fill="var(--primary)"
+        />
+      </svg>
+    );
+  }
+
+  return (
+    <svg
+      width="25"
+      height="25"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z"
+        fill="#6F7071"
+      />
+      <path
+        d="M4 20C4 16.6863 7.13401 14 11 14H13C16.866 14 20 16.6863 20 20V21H4V20Z"
+        fill="#6F7071"
+      />
+    </svg>
+  );
+}
 
 export function MinusIcon(props: HTMLProps<SVGSVGElement>) {
   return (

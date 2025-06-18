@@ -66,4 +66,8 @@ export class UploadService {
 
     return result as UploadFileInfo;
   }
+  createUpload(uploadFileInfo: UploadFileInput) {
+    const upload = new this.uploadModel(uploadFileInfo);
+    return upload.save();
+  }
 }

@@ -10,6 +10,9 @@ import router from "@/router";
 import { ApolloProvider } from "@apollo/client";
 import client from "@/graphql/apolloClient"; 
 
+// Error Boundary
+import ErrorBoundary from "@/components/error-boundary";
+
 // ZaUI stylesheet
 import "zmp-ui/zaui.css";
 // Tailwind stylesheet
@@ -27,8 +30,10 @@ if (!window.APP_CONFIG) {
 // Mount the app
 const root = createRoot(document.getElementById("app")!);
 root.render(
-  createElement(ApolloProvider, { 
-    client,
-    children: createElement(RouterProvider, { router })
+  createElement(ErrorBoundary, {
+    children: createElement(ApolloProvider, { 
+      client,
+      children: createElement(RouterProvider, { router })
+    })
   })
 );

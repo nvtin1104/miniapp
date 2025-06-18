@@ -4,9 +4,7 @@ import { ZaloMeResponse } from 'src/user/entities/custom.entity';
 import { User } from 'src/user/entities/user.entity';
 import { GqlAuthGuard } from 'src/common/guards/gql-auth.guard';
 import { UseGuards } from '@nestjs/common';
-import { ZaloActiveInput } from './zalo.input';
-
-
+import { ZaloActiveInput } from './zalo.entity';
 
 @Resolver()
 export class ZaloResolver {

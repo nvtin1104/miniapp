@@ -4,13 +4,12 @@ import { useAtomValue } from "jotai";
 import { PropsWithChildren } from "react";
 import { Icon } from "zmp-ui";
 import Register from "./register";
-import { loadableUserInfoState, userInfoState, userZalo } from "@/store/userAtom";
+import { loadableUserInfoState, userZalo } from "@/store/userAtom";
 
 function UserInfo({ children }: PropsWithChildren) {
-  const userInfoData = useAtomValue(userInfoState);
   const loadableUserInfo = useAtomValue(loadableUserInfoState);
   const userInfo = useAtomValue(userZalo);
-  if (loadableUserInfo.state === "hasData" && loadableUserInfo.data && userInfo?.isZaloActive) {
+  if (userInfo?.isZaloActive) {
     return (
       <>
         <div className="bg-section rounded-lg p-4 flex items-center space-x-4 border-[0.5px] border-black/15">

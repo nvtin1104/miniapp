@@ -1,7 +1,7 @@
 import { userInfoKeyState, userInfoState } from "@/store/userAtom";
 import { useSetAtom } from "jotai";
 import { useAtomCallback } from "jotai/utils";
-import { authorize } from "zmp-sdk";
+import { authorize, getAccessToken } from "zmp-sdk";
 
 export function useRequestInformation() {
     const getStoredUserInfo = useAtomCallback(async (get) => {
@@ -12,15 +12,25 @@ export function useRequestInformation() {
     const refreshPermissions = () => setInfoKey((key) => key + 1);
 
     return async () => {
-        const userInfo = await getStoredUserInfo();
-        if (!userInfo) {
-            await authorize({
-                scopes: ["scope.userInfo", "scope.userPhonenumber"],
-            });
-            refreshPermissions();
-            await new Promise(r => setTimeout(r, 200));
-            return await getStoredUserInfo();
+        try {
+            const userInfo = await getStoredUserInfo();
+            if (!userInfo) {
+                try {
+                    await authorize({
+                        scopes: ["scope.userInfo", "scope.userPhonenumber"],
+                    });
+                    refreshPermissions();
+                    await new Promise(r => setTimeout(r, 200));
+                    return await getStoredUserInfo();
+                } catch (authError) {
+                    console.error("Authorization error:", authError);
+                    throw authError;
+                }
+            }
+            return userInfo;
+        } catch (error) {
+            console.error("Error in useRequestInformation:", error);
+            throw error;
         }
-        return userInfo;
     };
 }

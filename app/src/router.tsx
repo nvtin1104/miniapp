@@ -14,11 +14,31 @@ import StationsPage from "./pages/cart/stations";
 import OrderDetailPage from "./pages/orders/detail";
 import ProfileEditorPage from "./pages/profile/editor";
 
+// Error component for router
+function RouterError() {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
+      <div className="text-6xl mb-4">⚠️</div>
+      <h2 className="text-xl font-semibold mb-2">Đã xảy ra lỗi</h2>
+      <p className="text-sm text-gray-600 mb-4">
+        Rất tiếc, đã có lỗi xảy ra. Vui lòng thử lại sau.
+      </p>
+      <button
+        onClick={() => window.location.reload()}
+        className="px-4 py-2 bg-primary text-white rounded-lg text-sm"
+      >
+        Tải lại trang
+      </button>
+    </div>
+  );
+}
+
 const router = createBrowserRouter(
   [
     {
       path: "/",
       element: <Layout />,
+      errorElement: <RouterError />,
       children: [
         {
           path: "/",

@@ -89,11 +89,11 @@ export class UserService {
       const { hashPassword } = createBcryptHook(this.configService);
       return hashPassword(password).then((hashedPassword) => {
         updateData.password = hashedPassword;
-        return this.userModel.findByIdAndUpdate(id, updateData, { new: true }).exec();
+        return this.userModel.findByIdAndUpdate(id, updateData, { new: true }).populate('avatar').exec();
       });
     }
 
-    return this.userModel.findByIdAndUpdate(id, updateData, { new: true }).exec();
+    return this.userModel.findByIdAndUpdate(id, updateData, { new: true }).populate('avatar').exec();
   }
 
   async remove(id: string): Promise<User | null> {

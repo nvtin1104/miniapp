@@ -12,13 +12,19 @@ import { getUserID } from "zmp-sdk/apis";
 import { useAtom } from "jotai";
 import { userZalo } from "@/store/userAtom";
 import { nativeStorage } from "zmp-sdk/apis";
+
 export default function Layout() {
   const [userID, setUserID] = useState<string | null>(null);
   const [userInfo, setUserInfo] = useAtom(userZalo);
+  
   useEffect(() => {
     const fetchUserID = async () => {
-      const userId = await getUserID({});
-      setUserID(userId);
+      try {
+        const userId = await getUserID({});
+        setUserID(userId);
+      } catch (error) {
+        console.error("Error fetching user ID:", error);
+      }
     };
     fetchUserID();
   }, []);
@@ -27,15 +33,21 @@ export default function Layout() {
     variables: { code: userID },
     skip: !userID,
     fetchPolicy: 'network-only',
+    onError: (error) => {
+      console.error("Error fetching user info:", error);
+    }
   });
 
   useEffect(() => {
-    if (data) {
-      nativeStorage.setItem("accessToken", data.miniAppLogin.accessToken);
-      setUserInfo(data.miniAppLogin.user);
+    if (data?.miniAppLogin) {
+      try {
+        nativeStorage.setItem("accessToken", data.miniAppLogin.accessToken);
+        setUserInfo(data.miniAppLogin.user);
+      } catch (error) {
+        console.error("Error setting user data:", error);
+      }
     }
-    if (error) console.log(error);
-  }, [data, error]);
+  }, [data, setUserInfo]);
 
   return (
     <div className="w-screen h-screen flex flex-col bg-section text-foreground">
