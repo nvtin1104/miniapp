@@ -63,6 +63,31 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Category {
+  _id: String!
+  name: String!
+  description: String
+  slug: String
+  image: UploadFileInfo
+  parentId: String!
+  status: Boolean!
+  level: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type CategoriesListResponse {
+  data: [Category!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type Product {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 type Query {
   users(query: UserFilterInput, sort: [SortInput!], pagination: PaginationInput): UserListResponse!
   user(id: String!): User!
@@ -70,6 +95,11 @@ type Query {
   getProfile: String!
   miniAppLogin(code: String!): ZaloMeResponse!
   miniAppMe: User!
+  categories(query: CategoriesFilterInput, sort: [SortInput!], pagination: PaginationInput): CategoriesListResponse!
+  category(query: CategoriesFilterInput): Category
+  categoryBySlug(slug: String!): Category
+  categoryById(id: String!): Category!
+  product(id: Int!): Product!
 }
 
 input UserFilterInput {
@@ -118,6 +148,18 @@ input PaginationInput {
   limit: Int! = 10
 }
 
+input CategoriesFilterInput {
+  name: StringFieldOperator
+  description: StringFieldOperator
+  image: StringFieldOperator
+  slug: StringFieldOperator
+  parentId: StringFieldOperator
+  status: BooleanFieldOperator
+  level: IntFieldOperator
+  createdAt: StringFieldOperator
+  updatedAt: StringFieldOperator
+}
+
 type Mutation {
   createUser(createUserInput: CreateUserInput!, file: Upload): User!
   updateUser(updateUserInput: UpdateUserInput!, file: Upload): User!
@@ -125,6 +167,12 @@ type Mutation {
   uploadFile(file: Upload!, uploadFileInput: UploadFileInput!): UploadFileInfo!
   login(email: String!, password: String!): String!
   miniAppActiveZalo(data: ZaloActiveInput!): User!
+  createCategory(createCategoryInput: CreateCategoryInput!): Category!
+  updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
+  removeCategory(id: String!): Category!
+  createProduct(createProductInput: CreateProductInput!): Product!
+  updateProduct(updateProductInput: UpdateProductInput!): Product!
+  removeProduct(id: Int!): Product!
 }
 
 input CreateUserInput {
@@ -185,4 +233,38 @@ input ZaloActiveInput {
   name: String!
   token: String!
   userAccessToken: String!
+}
+
+input CreateCategoryInput {
+  name: String!
+  description: String
+  image: UploadFileInput
+  slug: String!
+  parentId: String
+  status: Boolean = true
+  level: Float = 0
+  type: String = "product"
+}
+
+input UpdateCategoryInput {
+  name: String
+  description: String
+  image: UploadFileInput
+  slug: String
+  parentId: String
+  status: Boolean = true
+  level: Float = 0
+  type: String = "product"
+  _id: String!
+}
+
+input CreateProductInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateProductInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }

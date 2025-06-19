@@ -10,6 +10,8 @@ import { AuthModule } from './auth/auth.module';
 import { graphqlUploadExpress } from 'graphql-upload-ts';
 import { UploadModule } from './upload/upload.module';
 import { ZaloModule } from './zalo/zalo.module';
+import { CategoriesModule } from './categories/categories.module';
+import { ProductModule } from './product/product.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -34,6 +36,8 @@ import { ZaloModule } from './zalo/zalo.module';
     AuthModule,
     UploadModule,
     ZaloModule,
+    CategoriesModule,
+    ProductModule,
   ],
 })
 export class AppModule implements NestModule {
