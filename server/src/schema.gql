@@ -175,6 +175,8 @@ input UpdateUserInput {
   address: String
   gender: String
   _id: ID!
+  lastLoginAt: DateTime
+  updatedAt: DateTime
 }
 
 input ZaloActiveInput {

@@ -27,12 +27,20 @@ export class AuthService {
         if (!isMatch) {
             throw new UnauthorizedException('Mật khẩu không chính xác');
         }
-
+        if (user.status === 'BANNED') {
+            throw new UnauthorizedException('Tài khoản đã bị khóa');
+        }
         return user;
     }
 
     async login(email: string, password: string): Promise<{ accessToken: string, refreshToken: string }> {
         const user = await this.validateUser(email, password);
+        const updateTimeLogin = new Date();
+        await this.userService.update(user._id, {
+            _id: user._id,
+            lastLoginAt: updateTimeLogin,
+            updatedAt: updateTimeLogin,
+        });
         const payload = {
             username: user.username,
             userId: user._id,
