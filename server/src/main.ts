@@ -9,8 +9,8 @@ async function bootstrap() {
       'https://h5.zdn.vn',
       'zbrowser://h5.zdn.vn',
       'http://localhost:5173',
+      'https://miniapp-wheat.vercel.app'
     ],
-    // origin: '*',
     credentials: true,
   });
   const port = Number(process.env.PORT) || 5555;
